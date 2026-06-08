@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 font-sans min-h-screen">
+    <nav class="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-lg font-bold tracking-tight">Admin Insights Dashboard</h1>
+            <a href="/admin/logout" class="bg-red-600 hover:bg-red-700 text-xs px-3 py-1.5 rounded font-medium transition">Secure Sign Out</a>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Total Normal Print Sales</p>
+                <p class="text-2xl font-black text-slate-800 mt-1">GHS {{ "%.2f"|format(grand_normal) }}</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Total Large Format Sales</p>
+                <p class="text-2xl font-black text-blue-600 mt-1">GHS {{ "%.2f"|format(grand_large) }}</p>
+            </div>
+            <div class="bg-emerald-600 text-white p-5 rounded-xl shadow-md">
+                <p class="text-xs uppercase tracking-wider text-emerald-200 font-bold">Combined Gross Revenue</p>
+                <p class="text-2xl font-black mt-1">GHS {{ "%.2f"|format(grand_total) }}</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-4 bg-slate-100 border-b border-slate-200">
+                <h2 class="font-bold text-slate-700">Chronological Transactions Audit Log</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-400 text-xs uppercase font-bold border-b border-slate-200">
+                            <th class="p-3">Timestamp (UTC)</th>
+                            <th class="p-3">Normal Printing</th>
+                            <th class="p-3">Large Format</th>
+                            <th class="p-3 bg-emerald-50 text-emerald-800">Total Entry Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-slate-100 text-slate-600">
+                        {% for sale in sales %}
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-3 font-mono text-xs">{{ sale.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td class="p-3">GHS {{ "%.2f"|format(sale.normal_print_amount) }}</td>
+                            <td class="p-3">GHS {{ "%.2f"|format(sale.large_format_amount) }}</td>
+                            <td class="p-3 bg-emerald-50 font-bold text-slate-900">GHS {{ "%.2f"|format(sale.total_entry_sales) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="p-6 text-center text-slate-400 italic">No sales logs stored in database yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
