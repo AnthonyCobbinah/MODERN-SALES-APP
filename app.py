@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import os
 
 app = Flask(__name__)
@@ -26,7 +27,8 @@ class Sale(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     normal_print_amount = db.Column(db.Float, nullable=False, default=0.0)
     large_format_amount = db.Column(db.Float, nullable=False, default=0.0)
-    timestamp = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    # Changed default to allow worker input dates
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     @property
     def total_entry_sales(self):
@@ -54,25 +56,37 @@ def worker_sales_entry():
         try:
             normal_print = float(request.form.get('normal_print', 0) or 0)
             large_format = float(request.form.get('large_format', 0) or 0)
+            custom_date_str = request.form.get('sale_date')
             
             if normal_print == 0 and large_format == 0:
                 flash("Please enter an amount for at least one service.", "warning")
                 return redirect('/')
 
-            new_sale = Sale(normal_print_amount=normal_print, large_format_amount=large_format)
+            # Parse custom date selected by worker or fallback to current time
+            if custom_date_str:
+                sale_time = datetime.strptime(custom_date_str, '%Y-%m-%d')
+            else:
+                sale_time = datetime.utcnow()
+
+            new_sale = Sale(
+                normal_print_amount=normal_print, 
+                large_format_amount=large_format,
+                timestamp=sale_time
+            )
             db.session.add(new_sale)
             db.session.commit()
             flash("Sales record saved successfully!", "success")
         except ValueError:
-            flash("Invalid input. Please enter numbers only.", "danger")
+            flash("Invalid input. Check fields and try again.", "danger")
         
         return redirect('/')
 
     sales = Sale.query.all()
     total_normal = sum(s.normal_print_amount for s in sales)
     total_large = sum(s.large_format_amount for s in sales)
+    current_date = datetime.utcnow().strftime('%Y-%m-%d')
 
-    return render_template('worker.html', total_normal=total_normal, total_large=total_large)
+    return render_template('worker.html', total_normal=total_normal, total_large=total_large, current_date=current_date)
 
 
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -115,45 +129,42 @@ def admin_dashboard():
         else:
             top_service = "Perfectly Balanced"
 
-        # Rule 1: Capitalizing on the winner
         if top_service == "Normal Document Printing":
             recommendations.append({
                 "type": "growth",
                 "title": "Leverage High-Volume Document Traffic",
-                "text": f"Normal printing generates {normal_pct:.1f}% of your revenue. Consider introducing a customer loyalty punch-card or a small binding/lamination upsell at the counter to maximize profit per interaction."
+                "text": f"Normal printing generates {normal_pct:.1f}% of your revenue. Consider introducing a customer loyalty program or a high-margin service bundle like binding/lamination at the terminal counter."
             })
         elif top_service == "Large Format / Banners":
             recommendations.append({
                 "type": "growth",
                 "title": "Scale Large Format Infrastructure",
-                "text": f"Large format brings in {large_pct:.1f}% of your cash flow. Ensure your plotter ink and vinyl material stocks are secured. Consider running B2B targeted outreach to local event planners or corporate brands."
+                "text": f"Large format brings in {large_pct:.1f}% of your cash flow. Secure your ink and media vinyl stock lines early, and run local targeted outreach campaigns to event planners."
             })
 
-        # Rule 2: Lifting up weak service sectors
         if normal_pct < 30 and grand_total > 100:
             recommendations.append({
                 "type": "warning",
                 "title": "Low Foot-Traffic Warning",
-                "text": "Normal print revenue is tracking under 30%. Consider putting a visible 'A-Frame' sign outside the shop or offering cheap student/bulk copy discounts to draw more clients through the door."
+                "text": "Normal print revenue is below 30%. Consider running small promotional offers or standard student copy discounts to drive immediate volume through the storefront door."
             })
         elif large_pct < 30 and grand_total > 100:
             recommendations.append({
                 "type": "warning",
                 "title": "Underutilized High-Margin Asset",
-                "text": "Large format print demands are low. Run an introductory promo offer on business banners, or display samples of high-quality pull-up signage near your front door to spark customer awareness."
+                "text": "Large format printer demands are flagging. Set up clear, high-contrast sample signs or banners near your entrance to catch passing consumer attention."
             })
             
-        # Rule 3: Maintenance mitigation
         recommendations.append({
             "type": "info",
             "title": "Routine Equipment Optimization",
-            "text": "To protect high revenue streams, check your printer heads and align cartridges every weekend. Dust buildup in a busy print shop is the number one cause of unexpected machine down-time."
+            "text": "To guarantee smooth operational run-times, clean your wide-format printheads and align cartridges every weekend. Shop particulate dust is the primary cause of sudden downtime."
         })
     else:
         recommendations.append({
             "type": "info",
             "title": "Awaiting Initial Sales Data",
-            "text": "Once transactions start flowing through the worker terminal, the smart recommendation system will run automatic audits on your revenue ratios here."
+            "text": "Once data inputs start flowing cleanly through the worker terminal, your tailored smart analytics suggestions will formulate automatically here."
         })
 
     return render_template('dashboard.html', 
