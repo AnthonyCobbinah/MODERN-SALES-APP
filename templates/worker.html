@@ -7,9 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- PWA Settings -->
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#0f172a">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#ffffff">
     <link rel="apple-touch-icon" href="/static/logo.png">
 
     <style>
@@ -23,92 +24,99 @@
         }
     </script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-rose-500 selection:text-white">
 
-    <header class="border-b border-slate-900 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center max-w-5xl w-full mx-auto">
+    <!-- Header Navigation -->
+    <header class="border-b border-slate-200 bg-white/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center max-w-5xl w-full mx-auto">
         <div class="flex items-center gap-3">
-            <div class="h-9 w-9 bg-gradient-to-tr from-indigo-500 to-violet-500 rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20">
+            <div class="h-9 w-9 bg-gradient-to-tr from-[##5A3E54] to-rose-600 rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-rose-500/20" style="background: linear-gradient(135deg, #4A2E43 0%, #E11D48 100%);">
                 M
             </div>
             <div>
-                <h1 class="text-base font-bold tracking-tight text-white">Modern Print</h1>
-                <p class="text-[11px] text-slate-400 font-medium tracking-wider uppercase">Sales Terminal</p>
+                <h1 class="text-base font-bold tracking-tight text-[#4A2E43]">Modern Print</h1>
+                <p class="text-[11px] text-slate-500 font-bold tracking-wider uppercase">Sales Terminal</p>
             </div>
         </div>
-        <a href="/admin/login" class="text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-200 px-4 py-2 rounded-xl transition-all duration-200 border border-slate-800 hover:border-slate-700">
+        <a href="/admin/login" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-[#4A2E43] px-4 py-2 rounded-xl transition-all duration-200 border border-slate-200">
             Management Area →
         </a>
     </header>
 
+    <!-- Workspace -->
     <main class="max-w-md w-full mx-auto p-4 flex-grow flex flex-col justify-center">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="mb-5 p-4 rounded-2xl text-sm font-medium shadow-xl border backdrop-blur-sm animate-fade-in
-                        {% if category == 'success' %} bg-emerald-500/10 text-emerald-400 border-emerald-500/20 
-                        {% elif category == 'warning' %} bg-amber-500/10 text-amber-400 border-amber-500/20 
-                        {% else %} bg-rose-500/10 text-rose-400 border-rose-500/20 {% endif %}">
-                        <div class="flex items-center gap-2.5">
-                            <span>{{ message }}</span>
-                        </div>
+                    <div class="mb-5 p-4 rounded-2xl text-sm font-semibold shadow-md border animate-fade-in
+                        {% if category == 'success' %} bg-emerald-50 text-emerald-800 border-emerald-200 
+                        {% elif category == 'warning' %} bg-amber-50 text-amber-800 border-amber-200 
+                        {% else %} bg-rose-50 text-rose-800 border-rose-200 {% endif %}">
+                        <div>{{ message }}</div>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
-        <div class="bg-slate-900 border border-slate-800/80 rounded-3xl p-6 mb-6 shadow-2xl backdrop-blur-md">
+        <!-- Input Terminal Card -->
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 mb-6 shadow-xl">
             <div class="mb-6">
-                <h2 class="text-lg font-bold text-white">Record Transaction</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Input print jobs to update database ledgers.</p>
+                <h2 class="text-lg font-extrabold text-[#4A2E43]">Record Transaction</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Input print jobs to update database ledgers.</p>
             </div>
             
             <form action="/" method="POST" class="space-y-5">
-                <div class="space-y-2">
-                    <label class="block text-[11px] font-bold text-slate-400 tracking-wide uppercase">Transaction Logging Date</label>
+                <!-- Logging Date -->
+                <div class="space-y-1.5">
+                    <label class="block text-[11px] font-bold text-slate-500 tracking-wide uppercase">Transaction Logging Date</label>
                     <input type="date" name="sale_date" value="{{ current_date }}" required
-                        class="w-full bg-slate-950 border border-slate-800/80 text-slate-300 px-4 py-3 rounded-2xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-semibold text-sm scheme-dark">
+                        class="w-full bg-slate-50 border border-slate-200 text-slate-800 px-4 py-3 rounded-2xl focus:outline-none focus:border-[#4A2E43] focus:ring-4 focus:ring-[#4A2E43]/10 transition-all font-semibold text-sm">
                 </div>
 
-                <div class="space-y-2">
-                    <label class="block text-[11px] font-bold text-slate-400 tracking-wide uppercase">Normal Document Printing</label>
-                    <div class="relative group">
-                        <span class="absolute left-4 top-3.5 text-slate-500 font-bold text-sm">GHS</span>
+                <!-- Normal Print Field -->
+                <div class="space-y-1.5">
+                    <label class="block text-[11px] font-bold text-slate-500 tracking-wide uppercase">Normal Document Printing</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400 font-bold text-sm">GHS</span>
                         <input type="number" step="0.01" min="0" name="normal_print" placeholder="0.00" 
-                            class="w-full bg-slate-950 border border-slate-800/80 text-white pl-14 pr-4 py-3.5 rounded-2xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 font-bold text-xl transition-all placeholder:text-slate-700">
+                            class="w-full bg-slate-50 border border-slate-200 text-[#4A2E43] pl-14 pr-4 py-3.5 rounded-2xl focus:outline-none focus:border-[#4A2E43] focus:ring-4 focus:ring-[#4A2E43]/10 font-bold text-xl transition-all placeholder:text-slate-300">
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="block text-[11px] font-bold text-slate-400 tracking-wide uppercase">Large Format / Banners</label>
-                    <div class="relative group">
-                        <span class="absolute left-4 top-3.5 text-slate-500 font-bold text-sm">GHS</span>
+                <!-- Large Format Field -->
+                <div class="space-y-1.5">
+                    <label class="block text-[11px] font-bold text-slate-500 tracking-wide uppercase">Large Format / Banners</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400 font-bold text-sm">GHS</span>
                         <input type="number" step="0.01" min="0" name="large_format" placeholder="0.00" 
-                            class="w-full bg-slate-950 border border-slate-800/80 text-white pl-14 pr-4 py-3.5 rounded-2xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 font-bold text-xl transition-all placeholder:text-slate-700">
+                            class="w-full bg-slate-50 border border-slate-200 text-[#4A2E43] pl-14 pr-4 py-3.5 rounded-2xl focus:outline-none focus:border-[#4A2E43] focus:ring-4 focus:ring-[#4A2E43]/10 font-bold text-xl transition-all placeholder:text-slate-300">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-550/10 transition-all text-base mt-2 flex items-center justify-center gap-2">
+                <!-- Submission Action -->
+                <button type="submit" class="w-full text-white font-bold py-4 rounded-2xl shadow-lg transition-all text-base mt-2 hover:opacity-95"
+                    style="background: linear-gradient(135deg, #4A2E43 0%, #E11D48 100%); shadow: 0 10px 15px -3px rgba(225, 29, 72, 0.2);">
                     Record Entry
                 </button>
             </form>
         </div>
 
-        <div class="bg-slate-900/60 rounded-3xl p-5 border border-slate-800/80 shadow-xl">
-            <h3 class="text-[10px] uppercase font-bold tracking-widest text-indigo-400 mb-4">Cumulative Terminal History Totals</h3>
+        <!-- Summary Widget -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-md">
+            <h3 class="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-3">Cumulative Terminal History Totals</h3>
             <div class="grid grid-cols-2 gap-4">
-                <div class="border-r border-slate-800 pr-2">
-                    <p class="text-xs font-medium text-slate-400">Normal Print</p>
-                    <p class="text-xl font-extrabold text-white mt-1">GHS {{ "%.2f"|format(total_normal) }}</p>
+                <div class="border-r border-slate-200 pr-2">
+                    <p class="text-xs font-semibold text-slate-500">Normal Print</p>
+                    <p class="text-xl font-black text-[#4A2E43] mt-0.5">GHS {{ "%.2f"|format(total_normal) }}</p>
                 </div>
                 <div class="pl-2">
-                    <p class="text-xs font-medium text-slate-400">Large Format</p>
-                    <p class="text-xl font-extrabold text-violet-400 mt-1">GHS {{ "%.2f"|format(total_large) }}</p>
+                    <p class="text-xs font-semibold text-slate-500">Large Format</p>
+                    <p class="text-xl font-black text-rose-600 mt-0.5">GHS {{ "%.2f"|format(total_large) }}</p>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="text-center text-xs text-slate-600 py-6 font-medium">
+    <footer class="text-center text-xs text-slate-400 py-6 font-medium">
         &copy; 2026 Modern Print and I.T Solutions
     </footer>
 
