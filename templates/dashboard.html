@@ -30,6 +30,7 @@
 
     <main class="max-w-6xl mx-auto p-4 sm:p-8 space-y-6">
         
+        <!-- INTELLIGENCE ENGINE REAL-TIME DIAGNOSTIC BANNER -->
         <div class="bg-white border-l-4 rounded-r-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4
             {% if health_color == 'emerald' %} border-emerald-500 bg-emerald-50/10 
             {% elif health_color == 'amber' %} border-amber-500 bg-amber-50/10 
@@ -45,19 +46,20 @@
                 </div>
                 <p class="text-xs font-semibold text-slate-600 leading-relaxed">{{ health_desc }}</p>
             </div>
-            <div class="bg-white rounded-xl border px-4 py-2.5 shadow-sm text-center min-w-[140px]
+            <div class="bg-white rounded-xl border px-4 py-2.5 shadow-sm text-center min-w-[145px]
                 {% if health_color == 'emerald' %} border-emerald-100 {% elif health_color == 'amber' %} border-amber-100 {% else %} border-rose-100 {% endif %}">
-                <span class="text-[9px] font-bold text-slate-400 block uppercase">Net Net Balance</span>
+                <span class="text-[9px] font-bold text-slate-400 block uppercase">Net Net Profit</span>
                 <span class="text-base font-black tracking-tight {% if net_profit >= 0 %}text-emerald-700{% else %}text-rose-700{% endif %}">
                     GHS {{ "%.2f"|format(net_profit) }}
                 </span>
             </div>
         </div>
 
+        <!-- Financial Matrix Cards Layout -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white border border-emerald-100 p-5 rounded-2xl shadow-sm flex flex-col justify-between">
                 <div>
-                    <span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest block mb-1">Gross Terminal Turnovers</span>
+                    <span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest block mb-1">Gross Cumulative Revenue</span>
                     <p class="text-2xl font-black text-[#1B4332] tracking-tight">GHS {{ "%.2f"|format(grand_total) }}</p>
                 </div>
                 <div class="text-[11px] text-slate-500 font-bold mt-3 pt-2 border-t border-slate-100 flex justify-between items-center">
@@ -68,55 +70,57 @@
 
             <div class="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm flex flex-col justify-between">
                 <div>
-                    <span class="text-rose-700 text-[10px] uppercase font-bold tracking-widest block mb-1">Aggregated Cost Overhead</span>
+                    <span class="text-rose-700 text-[10px] uppercase font-bold tracking-widest block mb-1">Overhead Loss Balance</span>
                     <p class="text-2xl font-black text-rose-600 tracking-tight">GHS {{ "%.2f"|format(grand_expenses) }}</p>
                 </div>
                 <div class="text-[11px] text-slate-400 font-semibold mt-3 pt-2 border-t border-slate-100">
-                    Verified Outflow Incurrences
+                    Verified Total Expenditures
                 </div>
             </div>
 
             <div class="bg-white border border-emerald-100 p-5 rounded-2xl shadow-sm flex flex-col justify-between">
                 <div>
-                    <span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest block mb-1">Standard Print Yields</span>
+                    <span class="text-slate-400 text-[10px] uppercase font-bold tracking-widest block mb-1">Standard Document Share</span>
                     <p class="text-2xl font-black text-slate-800 tracking-tight">GHS {{ "%.2f"|format(grand_normal) }}</p>
                 </div>
                 <div class="text-[11px] text-emerald-600 font-bold mt-3 pt-2 border-t border-slate-100">
-                    Share: {{ "%.1f"|format(normal_pct) }}%
+                    Contribution: {{ "%.1f"|format(normal_pct) }}%
                 </div>
             </div>
 
             <div class="bg-white border border-emerald-100 p-5 rounded-2xl shadow-sm flex flex-col justify-between">
                 <div>
-                    <span class="text-emerald-700 text-[10px] uppercase font-bold tracking-widest block mb-1">Wide Format Yields</span>
+                    <span class="text-emerald-700 text-[10px] uppercase font-bold tracking-widest block mb-1">Wide Display Revenue</span>
                     <p class="text-2xl font-black text-emerald-600 tracking-tight">GHS {{ "%.2f"|format(grand_large) }}</p>
                 </div>
                 <div class="text-[11px] text-emerald-700 font-bold mt-3 pt-2 border-t border-slate-100">
-                    Share: {{ "%.1f"|format(large_pct) }}%
+                    Contribution: {{ "%.1f"|format(large_pct) }}%
                 </div>
             </div>
         </div>
 
+        <!-- HIGH-CONTRAST CHART ANALYSIS BOARD -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 bg-white border border-emerald-100 p-6 rounded-3xl shadow-sm space-y-4">
                 <div>
-                    <h3 class="font-black text-[#1B4332] text-sm tracking-tight">Corporate Cash Flow Metrics</h3>
-                    <p class="text-xs text-slate-400">Comparing asset income metrics against operational expenses.</p>
+                    <h3 class="font-black text-[#1B4332] text-sm tracking-tight">Capital Performance Stream Comparison</h3>
+                    <p class="text-xs text-slate-400">Visual mapping detailing structural streams against logged expenditure costs.</p>
                 </div>
                 {% if grand_total > 0 or grand_expenses > 0 %}
                 <div class="bg-[#F0F7FA]/40 p-3 rounded-2xl border border-emerald-50/50">
                     <canvas id="revenueBarChart" class="max-h-56"></canvas>
                 </div>
                 {% else %}
-                <p class="text-xs text-slate-400 italic text-center py-12">No active data pipelines captured inside cache parameters.</p>
+                <p class="text-xs text-slate-400 italic text-center py-12">No active performance data pipelines found inside database cache.</p>
                 {% endif %}
             </div>
 
+            <!-- DYNAMIC SMART INSIGHT LOG MODULE -->
             <div class="bg-white border border-emerald-100 p-6 rounded-3xl shadow-sm space-y-4 flex flex-col justify-between">
                 <div class="space-y-3">
                     <div class="flex items-center gap-1.5">
                         <span class="text-base">💡</span>
-                        <h2 class="font-black text-[#1B4332] tracking-tight text-sm">Automated Advisory Log</h2>
+                        <h2 class="font-black text-[#1B4332] tracking-tight text-sm">Automated Intelligence Advisory</h2>
                     </div>
                     <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
                         {% for rec in recommendations %}
@@ -134,26 +138,28 @@
                     </div>
                 </div>
                 <div class="pt-3 border-t text-[10px] text-slate-400 font-bold tracking-tight">
-                    Primary Engine Asset: <span class="text-[#1B4332] font-black underline">{{ top_service }}</span>
+                    Primary Cash Driver: <span class="text-[#1B4332] font-black underline">{{ top_service }}</span>
                 </div>
             </div>
         </div>
 
+        <!-- DOUBLE-ENTRY CHRONOLOGICAL VERIFICATION LEDGERS -->
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <!-- Left Data Array Component: Sales Receipts -->
             <div class="lg:col-span-3 bg-white rounded-2xl border border-emerald-100 shadow-sm overflow-hidden flex flex-col justify-between">
                 <div>
                     <div class="p-4 bg-slate-50/60 border-b border-slate-100">
-                        <h2 class="font-black text-[#1B4332] tracking-tight text-xs uppercase">Chronological Receipts Ledger</h2>
-                        <p class="text-[10px] text-slate-400">Incoming cash assets updated from worker registers.</p>
+                        <h2 class="font-black text-[#1B4332] tracking-tight text-xs uppercase">Structural Revenues Ledger</h2>
+                        <p class="text-[10px] text-slate-400">Incoming ledger transactions submitted from field terminal desks.</p>
                     </div>
                     <div class="overflow-x-auto max-h-64 overflow-y-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-50 text-slate-400 text-[9px] uppercase tracking-wider font-extrabold border-b border-slate-100">
-                                    <th class="p-3 pl-4">Date</th>
-                                    <th class="p-3">Normal</th>
-                                    <th class="p-3">Large Format</th>
-                                    <th class="p-3 pr-4 text-right">Sum Total</th>
+                                    <th class="p-3 pl-4">Logging Date</th>
+                                    <th class="p-3">Standard Doc</th>
+                                    <th class="p-3">Wide Format</th>
+                                    <th class="p-3 pr-4 text-right">Aggregated Net</th>
                                 </tr>
                             </thead>
                             <tbody class="text-xs divide-y divide-slate-100 font-medium text-slate-600">
@@ -166,7 +172,7 @@
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="4" class="p-8 text-center text-slate-400 italic">No incoming transactions found.</td>
+                                    <td colspan="4" class="p-8 text-center text-slate-400 italic">No verified transaction logs found.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -175,19 +181,20 @@
                 </div>
             </div>
 
+            <!-- Right Data Array Component: Cost Expenditures -->
             <div class="lg:col-span-2 bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden flex flex-col justify-between">
                 <div>
                     <div class="p-4 bg-rose-50/20 border-b border-rose-50">
-                        <h2 class="font-black text-rose-950 tracking-tight text-xs uppercase">Expenditure Review Audit</h2>
-                        <p class="text-[10px] text-slate-400">Material overhead costs and petty cash run-times.</p>
+                        <h2 class="font-black text-rose-950 tracking-tight text-xs uppercase">Overhead Expenditures Review</h2>
+                        <p class="text-[10px] text-slate-400">Worker outlays and material costs logged down on the floor.</p>
                     </div>
                     <div class="overflow-x-auto max-h-64 overflow-y-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-rose-50/10 text-slate-400 text-[9px] uppercase tracking-wider font-extrabold border-b border-rose-50">
-                                    <th class="p-3 pl-4">Date</th>
-                                    <th class="p-3">Description</th>
-                                    <th class="p-3 pr-4 text-right">Outflow</th>
+                                    <th class="p-3 pl-4">Logging Date</th>
+                                    <th class="p-3">Line Description</th>
+                                    <th class="p-3 pr-4 text-right">Cash Outflow</th>
                                 </tr>
                             </thead>
                             <tbody class="text-xs divide-y divide-slate-100 font-medium text-slate-600">
@@ -199,7 +206,7 @@
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="3" class="p-8 text-center text-slate-400 italic">No expenditure records logged.</td>
+                                    <td colspan="3" class="p-8 text-center text-slate-400 italic">No operational expenditure items documented.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -216,7 +223,7 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Standard Documents', 'Large Format / Banners', 'Operational Expenses'],
+                labels: ['Standard Documents', 'Large Format Display', 'Overhead Expenses'],
                 datasets: [{
                     data: [{{ grand_normal }}, {{ grand_large }}, {{ grand_expenses }}],
                     backgroundColor: [

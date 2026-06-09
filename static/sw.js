@@ -13,7 +13,6 @@ self.addEventListener('install', (e) => {
   );
 });
 
-// Cache-first for Tailwind/manifest assets, network-first for the form logic
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     fetch(e.request).catch(() => {

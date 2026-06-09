@@ -43,6 +43,17 @@
                 salesTabBtn.className = "flex-1 py-3 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 transition-all";
             }
         }
+
+        function executeSubmission(type) {
+            const dateSource = document.getElementById('universal-date-picker').value;
+            if (type === 'sale') {
+                document.getElementById('sales-date-hidden').value = dateSource;
+                document.getElementById('master-sales-form').submit();
+            } else if (type === 'expense') {
+                document.getElementById('expense-date-hidden').value = dateSource;
+                document.getElementById('master-expense-form').submit();
+            }
+        }
     </script>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-emerald-600 selection:text-white">
@@ -77,6 +88,7 @@
             {% endif %}
         {% endwith %}
 
+        <!-- Navigation Tabs Selector Switcher -->
         <div class="bg-white/80 backdrop-blur border border-emerald-100 p-1.5 rounded-2xl flex gap-1 shadow-inner">
             <button id="tab-sales-btn" onclick="switchTerminalTab('sales')" class="flex-1 py-3 text-xs font-black rounded-xl bg-[#1B4332] text-white shadow-sm transition-all">
                 📥 Record Revenues
@@ -87,23 +99,25 @@
         </div>
 
         <div class="bg-white border border-emerald-100 rounded-3xl p-6 shadow-xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1.5 bg-slate-100" id="accent-bar" style="background: linear-gradient(90deg, #1B4332 0%, #52B788 100%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-1.5" style="background: linear-gradient(90deg, #1B4332 0%, #52B788 100%);"></div>
             
-            <div class="mb-4">
+            <!-- Shared Ledger Date Picker Element -->
+            <div class="mb-5">
                 <label class="block text-[10px] font-bold text-slate-400 tracking-wide uppercase mb-1">Universal Entry Ledger Date</label>
-                <input type="date" name="entry_date" form="master-sales-form" id="sales-date-proxy" value="{{ current_date }}" required
+                <input type="date" id="universal-date-picker" value="{{ current_date }}" required
                     class="w-full bg-[#F0F7FA]/60 border border-emerald-100 text-[#1B4332] px-4 py-2.5 rounded-xl focus:outline-none transition-all font-bold text-sm">
             </div>
 
+            <!-- Tab Context Area 1: Sales Registry Form -->
             <div id="sales-form-container" class="space-y-4">
                 <div>
                     <h2 class="text-lg font-black text-[#1B4332] tracking-tight">Income Reporting Terminal</h2>
-                    <p class="text-xs text-slate-400">Post verified cash register data directly to ledger assets.</p>
+                    <p class="text-xs text-slate-400">Post verified cash register items into live database structures.</p>
                 </div>
                 
-                <form action="/" method="POST" id="master-sales-form" class="space-y-4">
+                <form action="/" method="POST" id="master-sales-form" class="space-y-4" onSubmit="event.preventDefault(); executeSubmission('sale');">
                     <input type="hidden" name="form_type" value="sale">
-                    <input type="hidden" name="entry_date" id="sales-date-real">
+                    <input type="hidden" name="entry_date" id="sales-date-hidden">
 
                     <div class="space-y-1">
                         <label class="block text-[11px] font-bold text-[#1B4332] tracking-wide uppercase opacity-80">Normal Document Printing</label>
@@ -123,28 +137,28 @@
                         </div>
                     </div>
 
-                    <button type="submit" onclick="document.getElementById('sales-date-real').value = document.getElementById('sales-date-proxy').value" 
-                        class="w-full text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all text-sm mt-2"
+                    <button type="submit" class="w-full text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all text-sm mt-2"
                         style="background: linear-gradient(135deg, #1B4332 0%, #2D6A4F 100%);">
                         Submit Gross Revenue
                     </button>
                 </form>
             </div>
 
+            <!-- Tab Context Area 2: Expense Registry Form -->
             <div id="expense-form-container" class="space-y-4 hidden">
                 <div>
                     <h2 class="text-lg font-black text-rose-900 tracking-tight">Expense Reporting Terminal</h2>
-                    <p class="text-xs text-slate-400">Log petty cash usage, paper stock acquisitions, ink refills or utility payments.</p>
+                    <p class="text-xs text-slate-400">Log shop supply outlays, machine maintenance, or utility costs.</p>
                 </div>
                 
-                <form action="/" method="POST" id="master-expense-form" class="space-y-4">
+                <form action="/" method="POST" id="master-expense-form" class="space-y-4" onSubmit="event.preventDefault(); executeSubmission('expense');">
                     <input type="hidden" name="form_type" value="expense">
-                    <input type="hidden" name="entry_date" id="expense-date-real">
+                    <input type="hidden" name="entry_date" id="expense-date-hidden">
 
                     <div class="space-y-1">
                         <label class="block text-[11px] font-bold text-rose-900 tracking-wide uppercase opacity-80">Expenditure Line Item Description</label>
-                        <input type="text" name="description" placeholder="e.g., A4 Box ream purchase / Generator Fuel" required
-                            class="w-full bg-[#F0F7FA]/30 border border-slate-200 text-slate-800 px-4 py-3 rounded-xl focus:outline-none focus:border-rose-700 font-semibold text-sm transition-all">
+                        <input type="text" name="description" placeholder="e.g. Laminator foil roll / Electricity token" required
+                            class="w-full bg-[#F0F7FA]/30 border border-slate-200 text-slate-800 px-4 py-2.5 rounded-xl focus:outline-none focus:border-rose-700 font-semibold text-sm transition-all">
                     </div>
 
                     <div class="space-y-1">
@@ -156,14 +170,14 @@
                         </div>
                     </div>
 
-                    <button type="submit" onclick="document.getElementById('expense-date-real').value = document.getElementById('sales-date-proxy').value"
-                        class="w-full bg-rose-700 hover:bg-rose-800 text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all text-sm mt-2">
+                    <button type="submit" class="w-full bg-rose-700 hover:bg-rose-800 text-white font-extrabold py-3.5 rounded-xl shadow-md transition-all text-sm mt-2">
                         Log Operational Loss
                     </button>
                 </form>
             </div>
         </div>
 
+        <!-- Terminal Workspace Metric Summary Widgets -->
         <div class="bg-white rounded-3xl p-5 border border-emerald-100 shadow-md space-y-4">
             <h3 class="text-[10px] uppercase font-bold tracking-widest text-emerald-700 border-b border-slate-50 pb-2">Shift Cumulative Cache Audits</h3>
             <div class="grid grid-cols-3 gap-2 text-center">

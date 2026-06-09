@@ -39,9 +39,24 @@ class Expense(db.Model):
     amount = db.Column(db.Float, nullable=False, default=0.0)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Create database tables automatically
+# Self-Healing Initialization Routine to protect legacy production datasets
 with app.app_context():
     db.create_all()
+    try:
+        # Check if the database engine can successfully talk to the expense table
+        db.session.execute(db.text("SELECT 1 FROM expense LIMIT 1"))
+    except Exception:
+        db.session.rollback()
+        # If it throws an exception, it means the table is missing from your old file. Create it manually:
+        db.session.execute(db.text("""
+            CREATE TABLE IF NOT EXISTS expense (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                description VARCHAR(255) NOT NULL,
+                amount FLOAT NOT NULL,
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+        """))
+        db.session.commit()
 
 # --- App Routes for PWA Root Access ---
 @app.route('/manifest.json')
@@ -61,9 +76,11 @@ def worker_sales_entry():
         form_type = request.form.get('form_type')
         custom_date_str = request.form.get('entry_date')
         
-        # Parse logging date or fallback to current time
         if custom_date_str:
-            entry_time = datetime.strptime(custom_date_str, '%Y-%m-%d')
+            try:
+                entry_time = datetime.strptime(custom_date_str, '%Y-%m-%d')
+            except ValueError:
+                entry_time = datetime.utcnow()
         else:
             entry_time = datetime.utcnow()
 
@@ -100,10 +117,10 @@ def worker_sales_entry():
                 )
                 db.session.add(new_expense)
                 db.session.commit()
-                flash("Expense logged and queued for audit review.", "success")
+                flash("Expense logged successfully!", "success")
                 
         except ValueError:
-            flash("Invalid input numeric formatting. Check fields and try again.", "danger")
+            flash("Invalid numeric format. Please check inputs and try again.", "danger")
         
         return redirect('/')
 
@@ -150,13 +167,11 @@ def admin_dashboard():
     grand_expenses = sum(e.amount for e in all_expenses)
     net_profit = grand_total - grand_expenses
 
-    # --- ADVANCED BUSINESS ANALYTICS & INTELLIGENCE ENGINE ---
     normal_pct = 0.0
     large_pct = 0.0
     top_service = "None"
     recommendations = []
 
-    # 1. Profitability Matrix Assessment
     if grand_total > 0:
         profit_margin_pct = (net_profit / grand_total) * 100
         normal_pct = (grand_normal / grand_total) * 100
@@ -171,57 +186,56 @@ def admin_dashboard():
     else:
         profit_margin_pct = 0.0
 
-    # 2. Algorithmic Financial Health Status Definitions
+    # Business Intelligence Evaluations Engine
     if grand_total == 0 and grand_expenses == 0:
-        health_status = "Awaiting Telemetry"
+        health_status = "Awaiting Telemetry Data"
         health_color = "slate"
-        health_desc = "No operational ledger data has been detected yet inside the terminal cache."
+        health_desc = "No operational ledger metrics detected inside terminal data streams."
     elif net_profit > 0:
-        if profit_margin_pct >= 40:
+        if profit_margin_pct >= 35:
             health_status = "Optimal Profit Yield"
             health_color = "emerald"
-            health_desc = f"Excellent capital efficiency. Operating with a robust {profit_margin_pct:.1f}% net margin. Scalable buffer exists."
+            health_desc = f"Excellent capital efficiency. Business operating at a healthy {profit_margin_pct:.1f}% net margin yield."
         else:
-            health_status = "Marginal Profitability"
+            health_status = "Marginal Profitability Warning"
             health_color = "amber"
-            health_desc = f"Firm is operating in net-positive territory, but margins are tight ({profit_margin_pct:.1f}%). Evaluate and trim secondary overhead inputs."
+            health_desc = f"Operations are net-positive, but cash flow metrics are lean ({profit_margin_pct:.1f}%). Re-evaluate secondary costs."
     else:
-        health_status = "Net Operating Loss"
+        health_status = "Net Operating Loss Alert"
         health_color = "rose"
-        health_desc = f"Critical Exposure detected! Expenses exceed raw incoming revenue by GHS {abs(net_profit):.2f}. Implement immediate cash optimization protocols."
+        health_desc = f"Critical Financial Alert! Outflows exceed incoming revenue streams by GHS {abs(net_profit):.2f}."
 
-    # 3. Formulating Dynamic Insights
     if grand_total > 0:
         if top_service == "Normal Document Printing":
             recommendations.append({
                 "type": "growth",
                 "title": "Leverage High-Volume Document Traffic",
-                "text": f"Normal printing generates {normal_pct:.1f}% of your revenue. Consider introducing a customer loyalty program or high-margin service bundles like binding/lamination at the counter."
+                "text": f"Normal printing generates {normal_pct:.1f}% of your revenue. Consider introducing high-margin secondary add-ons like document binding or custom laminations."
             })
         elif top_service == "Large Format / Banners":
             recommendations.append({
                 "type": "growth",
                 "title": "Scale Large Format Infrastructure",
-                "text": f"Large format brings in {large_pct:.1f}% of your cash flow. Secure ink and media vinyl stock lines early, and run targeted outreach campaigns to local event planners."
+                "text": f"Large format brings in {large_pct:.1f}% of your cash flows. Secure your consumables stock lines early to stay clear of local pricing shifts."
             })
 
         if profit_margin_pct < 20 and profit_margin_pct > 0:
             recommendations.append({
                 "type": "warning",
-                "title": "Expense Overhead Compaction Warning",
-                "text": f"Overhead is absorbing {100 - profit_margin_pct:.1f}% of gross incoming margins. Audit individual material run-times and limit worker-logged petty cash allocations."
+                "title": "Overhead Optimization Flagged",
+                "text": f"Production costs are absorbing {100 - profit_margin_pct:.1f}% of gross performance. Strict tracking of raw materials and utilities usage is highly advised."
             })
         elif profit_margin_pct <= 0:
             recommendations.append({
                 "type": "warning",
-                "title": "Strategic Retrenchment Required",
-                "text": "The operational facility is processing under cost parity. Temporarily halt unessential asset deployments, audit major structural spending lines, or re-evaluate baseline print pricing matrices."
+                "title": "Deficit Strategy Implementation Needed",
+                "text": "The shop terminal is tracking a net structural loss. Audit material waste levels and reconsider the standard price matrix of low-yield print sizes."
             })
 
         recommendations.append({
             "type": "info",
             "title": "Routine Equipment Optimization",
-            "text": "To guarantee smooth operational run-times, clean wide-format printheads and align cartridges every weekend. Dust is the primary cause of sudden downtime."
+            "text": "To guarantee smooth operational run-times, clean your wide-format printheads and align cartridges every weekend. Shop particulate dust is the primary cause of sudden downtime."
         })
     else:
         recommendations.append({
